@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version '2.11.2'
 }
 
 group = 'qa.abels'
@@ -9,11 +10,81 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+def allureVersion = "2.21.0"
+
+allure {
+    report {
+        version.set(allureVersion)
+    }
+    adapter {
+        aspectjWeaver.set(true)
+        frameworks {
+            junit5 {
+                adapterVersion.set(allureVersion)
+            }
+        }
+    }
 }
 
-test {
+dependencies {
+    testImplementation(
+            'com.github.javafaker:javafaker:1.0.2',
+            "org.aeonbits.owner:owner:1.0.12",
+            'org.junit.jupiter:junit-jupiter:5.10.1',
+            'com.codeborne:selenide:6.19.1'
+    )
+}
+
+tasks.withType(Test) {
     useJUnitPlatform()
+    systemProperties(System.getProperties())
+
+    testLogging {
+        lifecycle {
+            events "started", "skipped", "failed", "standard_error", "standard_out"
+            exceptionFormat "short"
+        }
+    }
+}
+
+task simple_test(type: Test) {
+    useJUnitPlatform {
+        includeTags("simple")
+    }
+}
+
+task registration_test(type: Test) {
+    useJUnitPlatform {
+        includeTags("registration")
+    }
+}
+
+task property1_test(type: Test) {
+    useJUnitPlatform {
+        includeTags("property1")
+    }
+}
+
+task property2_test(type: Test) {
+    useJUnitPlatform {
+        includeTags("property2")
+    }
+}
+
+task property3_test(type: Test) {
+    useJUnitPlatform {
+        includeTags("property3")
+    }
+}
+
+task owner1_test(type: Test) {
+    useJUnitPlatform {
+        includeTags("owner1")
+    }
+}
+
+task owner3_test(type: Test) {
+    useJUnitPlatform {
+        includeTags("owner3")
+    }
 }
